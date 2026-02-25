@@ -334,27 +334,6 @@ export default function App() {
     e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]);
   }, []);
 
-  const getStyledHTML = () => `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>${title || "Sermon Handout"}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Source Serif 4', serif; background: #fdf8f0; color: #1a1208; padding: 56px 64px; max-width: 800px; margin: 0 auto; line-height: 1.85; }
-    .handout-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 6px; }
-    .handout-subtitle { text-align: center; font-style: italic; color: rgba(26,18,8,0.5); font-size: 14px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid rgba(26,18,8,0.15); }
-    .handout-section-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #8b6914; margin: 28px 0 10px; }
-    .handout-line { margin-bottom: 10px; font-size: 15px; }
-    .blank { display: inline-block; border-bottom: 1.5px solid #1a1208; min-width: 160px; margin: 0 4px; vertical-align: bottom; height: 20px; }
-    .handout-note { background: rgba(212,175,95,0.1); border-left: 3px solid #d4af5f; padding: 12px 16px; margin: 16px 0; font-size: 14px; font-style: italic; color: rgba(26,18,8,0.75); }
-    .handout-footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid rgba(26,18,8,0.12); text-align: center; font-size: 12px; color: rgba(26,18,8,0.35); letter-spacing: 1px; text-transform: uppercase; }
-    @media print { body { padding: 0.5in; } @page { margin: 0; } }
-  </style>
-</head>
-<body>${handoutHTML}</body>
-</html>`;
 
   const downloadWord = async () => {
     setDownloading("word");
