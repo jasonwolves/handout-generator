@@ -322,6 +322,7 @@ export default function App() {
   const [handoutHTML, setHandoutHTML] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [downloading, setDownloading] = useState("");
+  const [answerKey, setAnswerKey] = useState([]);
 
   const handleFile = (f) => {
     if (!f) return;
@@ -369,20 +370,24 @@ export default function App() {
         medium: "Replace about 18-22% of key terms — light sprinkling, only the most important concepts",
         heavy: "Replace about 28-32% of key terms — moderate blanks on key concepts only",
       };
-
-      const systemPrompt = `You are an expert at creating sermon and lecture fill-in-the-blank handouts for church congregations and students.
+const systemPrompt = `You are an expert at creating sermon and lecture fill-in-the-blank handouts for church congregations and students.
 Transform the raw notes into a beautifully structured handout where key words are replaced with blanks.
 
 Rules:
 - ${densityMap[density]}
 - Preserve all scripture references, quotes, and illustrations — never blank those
 - Use section headings where appropriate
-- Output clean HTML only — no html/head/body tags, just inner content
-- Use these exact classes:
+- Output JSON only in this exact format:
+{
+  "html": "<div class=\\"handout-section-title\\">...</div>...",
+  "answers": ["word1", "word2", "word3"]
+}
+- In the html field, use these exact classes:
   <div class="handout-section-title">Title</div> for section headers
   <p class="handout-line">text <span class="blank"></span> more text</p> for content
   <div class="handout-note">text</div> for stories/illustrations
 - Never add inline styles to blank spans
+- The answers array should list every blanked word in order from top to bottom
 ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
 
       if (ext === "pdf") {
@@ -411,13 +416,16 @@ ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
       const data = await response.json();
       if (data.error) throw new Error(data.error.message);
 
-      const rawHTML = data.content.map((c) => c.text || "").join("");
-      setHandoutHTML(`
-        <div class="handout-title">${title || "Sermon Notes"}</div>
-        <div class="handout-subtitle">Fill in the blanks as we study together</div>
-        ${rawHTML}
-        <div class="handout-footer">✦ &nbsp; Notes &nbsp; ✦</div>
-      `);
+     const raw = data.content.map((c) => c.text || "").join("");
+const clean = raw.replace(/```json|```/g, "").trim();
+const parsed = JSON.parse(clean);
+setAnswerKey(parsed.answers || []);
+setHandoutHTML(`
+  <div class="handout-title">${title || "Sermon Notes"}</div>
+  <div class="handout-subtitle">Fill in the blanks as we study together</div>
+  ${parsed.html}
+  <div class="handout-footer">✦ &nbsp; Notes &nbsp; ✦</div>
+`);
       setStatus("");
     } catch (err) {
       setError("Something went wrong: " + err.message);
@@ -485,7 +493,21 @@ ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
                   {downloading === "word" ? "Building..." : "⬇ Download Word (.docx)"}
                 </button>
               </div>
-              <div className="handout" dangerouslySetInnerHTML={{ __html: handoutHTML }} />
+            <div className="handout" dangerouslySetInnerHTML={{ __html: handoutHTML }} />
+            </div>
+          )}
+
+          {answerKey.length > 0 && (
+            <div className="result-section" style={{ marginTop: "32px" }}>
+              <div className="result-header">
+                <h2>Answer Key</h2>
+              </div>
+              <div className="handout" style={{ padding: "32px 64px" }}>
+                <div className="handout-section-title">Blanked Words — In Order</div>
+                {answerKey.map((word, i) => (
+                  <p className="handout-line" key={i}>{i + 1}. {word}</p>
+                ))}
+              </div>
             </div>
           )}
         </div>
