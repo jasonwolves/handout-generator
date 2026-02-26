@@ -400,7 +400,7 @@ ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
 
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "anthropic-dangerous-direct-browser-access": "true" },
+        headers: { "Content-Type": "application/json", "anthropic-dangerous-direct-browser-access": "true", "x-api-key": process.env.REACT_APP_ANTHROPIC_API_KEY },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4000, system: systemPrompt, messages }),
       });
 
