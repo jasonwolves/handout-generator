@@ -361,10 +361,7 @@ export default function App() {
 
 Save with **Cmd+S**, then commit and push:
 ```
-git add .
-git commit -m "debug api key"
-git push git@github.com:jasonwolves/handout-generator.git main
-git push git@github.com:jasonwolves/handout-generator.git main 
+
     setLoading(true); setError(""); setHandoutHTML("");
 
     try {
@@ -409,7 +406,8 @@ ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
 
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "anthropic-dangerous-direct-browser-access": "true", "x-api-key": process.env.REACT_APP_ANTHROPIC_API_KEY },
+       headers: { "Content-Type": "application/json", "anthropic-dangerous-direct-browser-access": "true", "x-api-key": process.env.REACT_APP_ANTHROPIC_API_KEY },
+
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4000, system: systemPrompt, messages }),
       });
 
