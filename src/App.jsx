@@ -357,10 +357,6 @@ export default function App() {
   const generate = async () => {
     if (!file) return;
     console.log("API KEY:", process.env.REACT_APP_ANTHROPIC_API_KEY);
-```
-
-Save with **Cmd+S**, then commit and push:
-```
 
     setLoading(true); setError(""); setHandoutHTML("");
 
