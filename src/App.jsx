@@ -420,12 +420,13 @@ ${customInstructions ? `\nExtra instructions: ${customInstructions}` : ""}`;
         const { base64 } = await parsePDF(file);
         messages = [{ role: "user", content: [
           { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
-          { type: "text", text: `Transform these notes into a fill-in-the-blank handout. ${title ? `Title: "${title}"` : "Pick an appropriate title."} Return only the HTML body content.` },
+          { type: "text", text: `Transform these notes into a fill-in-the-blank handout. ${title ? `Title: "${title}"` : "Pick an appropriate title."} Return ONLY valid JSON in the exact format specified. No other text.` },
         ]}];
       } else {
         setStatus("Reading DOCX...");
         const { text } = await parseDOCX(file);
-        messages = [{ role: "user", content: `Transform these notes into a fill-in-the-blank handout. ${title ? `Title: "${title}"` : "Pick an appropriate title."} Return only the HTML body content.\n\nNOTES:\n${text}` }];
+       messages = [{ role: "user", content: `Transform these notes into a fill-in-the-blank handout. ${title ? `Title: "${title}"` : "Pick an appropriate title."} Return ONLY valid JSON in the exact format specified. No other text.\n\nNOTES:\n${text}` }];
+
       }
 
       setStatus("Generating handout with AI...");
