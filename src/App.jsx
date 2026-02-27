@@ -513,14 +513,13 @@ setHandoutHTML(`
 
           {handoutHTML && (
             <div className="result-section">
-             <div className="result-header">
-                <h2>Answer Key</h2>
-                <button className="btn-outline" onClick={downloadAnswerKey}>
-                  Download Answer Key
+              <div className="result-header">
+                <h2>Your Handout</h2>
+                <button className="btn-outline" onClick={downloadWord} disabled={!!downloading}>
+                  {downloading === "word" ? "Building..." : "⬇ Download Word (.docx)"}
                 </button>
               </div>
-
-            <div className="handout" dangerouslySetInnerHTML={{ __html: handoutHTML }} />
+              <div className="handout" dangerouslySetInnerHTML={{ __html: handoutHTML }} />
             </div>
           )}
 
