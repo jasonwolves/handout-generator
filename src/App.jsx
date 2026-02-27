@@ -355,6 +355,31 @@ export default function App() {
     }
   };
 
+  const downloadAnswerKey = async () => {
+    setDownloading("answerkey");
+    try {
+      const answerHTML = `
+        <div class="handout-title">${title || "Sermon Notes"} — Answer Key</div>
+        <div class="handout-subtitle">Blanked words in order</div>
+        ${answerKey.map((word, i) => `<p class="handout-line">${i + 1}. ${word}</p>`).join("")}
+        <div class="handout-footer">✦ &nbsp; Answer Key &nbsp; ✦</div>
+      `;
+      const blob = await buildDocxBlob(answerHTML, `${title || "Sermon Notes"} — Answer Key`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(title || "sermon-handout").toLowerCase().replace(/\s+/g, "-")}-answer-key.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Answer key download failed: " + err.message);
+    } finally {
+      setDownloading("");
+    }
+  };
+  
   const generate = async () => {
     if (!file) return;
     console.log("API KEY:", process.env.REACT_APP_ANTHROPIC_API_KEY);
@@ -501,6 +526,9 @@ setHandoutHTML(`
             <div className="result-section" style={{ marginTop: "32px" }}>
               <div className="result-header">
                 <h2>Answer Key</h2>
+                <button className="btn-outline" onClick={downloadAnswerKey} disabled={!!downloading}>
+                  {downloading === "answerkey" ? "Building..." : "⬇ Download Answer Key (.docx)"}
+                </button>
               </div>
               <div className="handout" style={{ padding: "32px 64px" }}>
                 <div className="handout-section-title">Blanked Words — In Order</div>
